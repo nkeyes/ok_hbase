@@ -1,4 +1,4 @@
-# Ok::Hbase
+# Ok˚Hbase
 
 TODO: Write a gem description
 
