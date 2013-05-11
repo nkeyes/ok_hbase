@@ -19,4 +19,5 @@ Gem::Specification.new do |gem|
 
 
   gem.add_dependency 'thrift', '0.8.0'
+  gem.add_dependency 'activesupport'
 end

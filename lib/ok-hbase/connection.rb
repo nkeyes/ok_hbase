@@ -37,6 +37,8 @@ module OkHbase
     def open
       return if open?
       @transport.open
+
+      OkHbase.logger.info "OkHbase connected"
     end
 
     def open?
