@@ -11,7 +11,7 @@ module OkHbase
         include_timestamp: false,
         caching: 1000,
         limit: nil,
-    }
+    }.freeze
 
     attr_accessor :name, :connection
 
@@ -32,10 +32,12 @@ module OkHbase
 
         opts[:start_row] = opts[:row_prefix]
         opts[:stop_row] = OkHbase::increment_string opts[:start_row]
+
       end
       opts[:start_row] ||= ''
 
       scanner = self.class._scanner(opts)
+
 
       scanner_id = connection.client.scannerOpenWithScan(name, scanner)
 
