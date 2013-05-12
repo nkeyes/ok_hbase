@@ -10,6 +10,14 @@ module OkHbase
       end
     end
 
+    describe ".close" do
+      let(:conn) { Connection.new auto_connect: true }
+
+      it "should close a connection" do
+        expect { conn.close }.to change { conn.open? }.to(false)
+      end
+    end
+
     describe ".tables" do
       let(:conn) { Connection.new auto_connect: true }
 
