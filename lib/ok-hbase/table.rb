@@ -34,7 +34,7 @@ module OkHbase
       end
       opts[:start_row] ||= ''
 
-      scanner = _scanner(opts)
+      scanner = self.class._scanner(opts)
 
       scanner_id = connection.client.scannerOpenWithScan(name, scanner)
 
@@ -53,7 +53,7 @@ module OkHbase
           fetched_count += items.length
 
           items.map.with_index do |item, index|
-            yield item.row, _make_row(item.columns, opts[:include_timestamp])
+            yield item.row, self.class._make_row(item.columns, opts[:include_timestamp])
             return if opts[:limit] && index + 1 + returned_count == opts[:limit]
           end
 
@@ -68,26 +68,25 @@ module OkHbase
 
     private
 
-    def _scanner(opts)
+    def self._scanner(opts)
       scanner = Apache::Hadoop::Hbase::Thrift::TScan.new()
       scanner_fields = Apache::Hadoop::Hbase::Thrift::TScan::FIELDS
 
       opts.each_pair do |k, v|
-        field_key = k.to_s.upcase.gsub('_', '')
-        const = Apache::Hadoop::Hbase::Thrift::TScan.const_get(field_key) rescue nil
+        const = k.to_s.upcase.gsub('_', '')
+        const_value = Apache::Hadoop::Hbase::Thrift::TScan.const_get(const) rescue nil
 
-        if const
-          OkHbase.logger.info "setting scanner.#{scanner_fields[const][:name]}: #{v}"
-          scanner.send("#{scanner_fields[const][:name]}=", v)
+        if const_value
+          OkHbase.logger.info "setting scanner.#{scanner_fields[const_value][:name]}: #{v}"
+          scanner.send("#{scanner_fields[const_value][:name]}=", v)
         else
-
         end
       end
       scanner
 
     end
 
-    def _make_row(cell_map, include_timestamp)
+    def self._make_row(cell_map, include_timestamp)
       row = {}
       cell_map.each_pair do |cell_name, cell|
         row[cell_name] = cell.value
