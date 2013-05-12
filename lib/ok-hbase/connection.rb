@@ -2,9 +2,9 @@ require 'thrift'
 require 'thrift/transport/socket'
 require 'thrift/protocol/binary_protocol'
 
-require 'ok-hbase/thrift/hbase/hbase_constants'
-require 'ok-hbase/thrift/hbase/hbase_types'
-require 'ok-hbase/thrift/hbase/hbase'
+require 'thrift/hbase/hbase_constants'
+require 'thrift/hbase/hbase_types'
+require 'thrift/hbase/hbase'
 
 module OkHbase
   class Connection
