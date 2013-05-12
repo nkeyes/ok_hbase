@@ -88,7 +88,6 @@ module OkHbase
     end
 
     def _make_row(cell_map, include_timestamp)
-      return cell_map
       row = {}
       cell_map.each_pair do |cell_name, cell|
         row[cell_name] = cell.value
