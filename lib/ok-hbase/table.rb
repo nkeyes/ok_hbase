@@ -1,6 +1,18 @@
 module OkHbase
   class Table
 
+    SCANNER_DEFAULTS = {
+        start_row: nil,
+        stop_row: nil,
+        row_prefix: nil,
+        columns: nil,
+        filter_string: nil,
+        timestamp: nil,
+        include_timestamp: false,
+        caching: 1000,
+        limit: nil,
+    }
+
     attr_accessor :name, :connection
 
     def initialize(name, connection)
@@ -9,18 +21,7 @@ module OkHbase
     end
 
     def scan(opts={})
-      opts_defaults = {
-          start_row: nil,
-          stop_row: nil,
-          row_prefix: nil,
-          columns: nil,
-          filter_string: nil,
-          timestamp: nil,
-          include_timestamp: false,
-          caching: 1000,
-          limit: nil,
-      }
-      opts = opts_defaults.merge opts.select { |k| opts_defaults.keys.include? k }
+      opts = SCANNER_DEFAULTS.merge opts.select { |k| SCANNER_DEFAULTS.keys.include? k }
 
 
       raise ArgumentError.new "'caching' must be >= 1" unless opts[:caching] && opts[:caching] >= 1
