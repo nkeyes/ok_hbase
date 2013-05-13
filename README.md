@@ -1,6 +1,6 @@
 # ok-hbase
 
-Read the [wiki](https://github.com/okcwest-projects/ok-hbase/wiki)!
+Read the [wiki](https://github.com/okcwest/ok-hbase/wiki)!
 
 ## Installation
 
