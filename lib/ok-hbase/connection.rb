@@ -123,7 +123,13 @@ module OkHbase
     def table_enabled?(name)
       name = _table_name(name)
 
-      return client.isTableEnabled(name)
+      client.isTableEnabled(name)
+    end
+
+    def compact_table(name, major=false)
+      name = _table_name(name)
+
+      major ? client.majorCompact(name) : client.compact(name)
     end
 
     private
