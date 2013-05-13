@@ -20,6 +20,19 @@ module OkHbase
       @connection = connection
     end
 
+    def families()
+      descriptors = connection.client.getColumnDescriptors(name)
+
+      families = {}
+
+      descriptors.each_pair do |name, descriptor|
+        name = name[0...-1] # remove trailing ':'
+        families[name] = OkHbase.thrift_type_to_dict(descriptor)
+      end
+      families
+
+    end
+
     def scan(opts={})
       opts = SCANNER_DEFAULTS.merge opts.select { |k| SCANNER_DEFAULTS.keys.include? k }
 

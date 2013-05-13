@@ -26,4 +26,8 @@ module OkHbase
     end
     nil
   end
+
+  def self.thrift_type_to_dict(obj)
+    Hash[obj.class::FIELDS.map{ |k, v| [v[:name].underscore, obj.send(v[:name])]}]
+  end
 end
