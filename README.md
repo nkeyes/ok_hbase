@@ -1,6 +1,6 @@
-# OkHbase
+# ok-hbase
 
-TODO: Write a gem description
+Read the [wiki](https://github.com/okcwest-projects/ok-hbase/wiki)!
 
 ## Installation
 
