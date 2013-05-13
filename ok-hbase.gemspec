@@ -18,6 +18,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
 
-  gem.add_dependency 'thrift', '0.8.0'
+  gem.add_dependency 'thrift', '0.9.0'
   gem.add_dependency 'activesupport'
 end
