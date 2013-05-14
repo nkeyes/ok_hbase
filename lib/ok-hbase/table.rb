@@ -73,6 +73,26 @@ module OkHbase
       rows.map { |row| self.class._make_row(row.columns, include_timestamp) }
     end
 
+    def cells(row_key, column, versions = nil, timestamp = nil, include_timestamp = nil)
+
+      row_key.force_encoding(Encoding::UTF_8)
+
+      versions ||= (2 ** 31) -1
+
+      raise TypeError.new "'versions' parameter must be a number or nil" unless versions.is_a? Integer
+      raise ArgumentError.new "'versions' parameter must be >= 1" unless versions >= 1
+
+      cells = if timestamp
+        raise TypeError.new "'timestamp' must be an integer" unless timestamp.is_a? Integer
+
+        connection.client.getVerTs(name, row_key, column, timestamp, versions)
+      else
+        connection.client.getVer(name, row_key, column, versions)
+      end
+
+      cells.map { |cell| include_timestamp ? [cell.value, cell.timestamp] : cell.value }
+    end
+
     def scan(opts={})
       opts = SCANNER_DEFAULTS.merge opts.select { |k| SCANNER_DEFAULTS.keys.include? k }
 
@@ -148,7 +168,7 @@ module OkHbase
     def self._make_row(cell_map, include_timestamp)
       row = {}
       cell_map.each_pair do |cell_name, cell|
-        row[cell_name] = cell.value
+        row[cell_name] = include_timestamp ? [cell.value, cell.timestamp] : cell.value
       end
       row
     end
