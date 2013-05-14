@@ -23,7 +23,6 @@ module OkHbase
 
 
     def send_batch()
-      ap mutations: @mutations
       batch_mutations = @mutations.map do |row_key, mutations|
         Apache::Hadoop::Hbase::Thrift::BatchMutation.new(row: row_key, mutations: mutations)
       end
