@@ -3,7 +3,7 @@ require 'spec_helper'
 module OkHbase
   describe Table do
     test_table_name = 'ok-hbase_test_table'
-    conn = Connection.new(auto_connect: true)
+    conn = Connection.new(auto_connect: true, timeout: 60)
 
     before(:all) do
       conn.create_table(test_table_name, d: {})
