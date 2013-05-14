@@ -140,6 +140,38 @@ module OkHbase
       end
     end
 
+    def put(row_key, data, timestamp = nil)
+      batch = self.batch(timestamp)
+      batch.put(row_key, data)
+      batch.send_batch()
+    end
+
+    def delete(row_key, columns = nil, timestamp = nil)
+      if columns
+        batch = self.batch(timestamp)
+        batch.delete(row_key, columns)
+        batch.send_batch()
+      else
+        timestamp ? @connection.client.deleteAllRowTs(name, row_key, timestamp) :  @connection.client.deleteAllRow(name, row_key)
+      end
+    end
+
+    def batch(timestamp = nil, batch_size = nil, transaction = false)
+      Batch.new(self, timestamp, batch_size, transaction)
+    end
+
+    def counter_set(row_key, column, value = 0)
+      put(row_key, {column => [value].pack('Q>')})
+    end
+
+    def counter_inc(row_key, column, value = 1)
+      connection.client.atomicIncrement(name, row_key, column, value)
+    end
+
+    def counter_dec (row_key, column, value = 1)
+      counter_inc(row_key, column, -value)
+    end
+
     alias_method :find, :scan
 
     private
