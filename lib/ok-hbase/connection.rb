@@ -99,6 +99,7 @@ module OkHbase
       end
 
       client.createTable(name, column_descriptors)
+      table(name)
     end
 
     def delete_table(name, disable=false)
