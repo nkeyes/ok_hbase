@@ -30,7 +30,11 @@ module OkHbase
         families[name] = OkHbase.thrift_type_to_dict(descriptor)
       end
       families
+    end
 
+    def regions
+      regions = connection.client.getTableRegions(name)
+      regions.map { |r| OkHbase.thrift_type_to_dict(r) }
     end
 
     def scan(opts={})

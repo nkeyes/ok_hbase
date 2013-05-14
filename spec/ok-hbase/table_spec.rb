@@ -2,7 +2,18 @@ require 'spec_helper'
 
 module OkHbase
   describe Table do
-    subject { Table.new('nkeyes_test_subspace_messages', Connection.new(auto_connect: true)) }
+    test_table_name = 'ok-hbase_test_table'
+    conn = Connection.new(auto_connect: true)
+
+    before(:all) do
+      conn.create_table(test_table_name, d: {})
+    end
+
+    after(:all) do
+      conn.delete_table(test_table_name, true)
+    end
+
+    subject { Table.new(test_table_name, conn) }
 
     describe "#_scanner" do
       let(:scanner_opts) { {
@@ -39,12 +50,21 @@ module OkHbase
           )
         }
 
-        subject.scan opts do
+        subject.scan(opts) {}
+      end
+    end
 
+    describe ".regions" do
+      it "should list all region having rows for the table" do
+        regions = subject.regions
+        regions.should be_an Array
+        regions.size.should be >= 1
+
+        regions.each do |region|
+          region.keys.should include('start_key', 'end_key', 'id', 'name', 'version')
         end
 
       end
-
     end
   end
 end
