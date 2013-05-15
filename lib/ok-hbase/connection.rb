@@ -89,7 +89,7 @@ module OkHbase
 
         args = {}
         options.each_pair do |option_name, value|
-          args[option_name.camelcase(:lower)] = value
+          args[option_name.to_s.camelcase(:lower)] = value
         end
 
         family_name = "#{family_name}:" unless family_name.to_s.end_with? ':'
