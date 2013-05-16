@@ -12,7 +12,7 @@ module OkHbase
       end
 
       def scan(opts={})
-        super {|row_key, data| yield self.class.row_class.new table: self, row_key: row_key, default_column_family: self.class.default_column_family, data: data }
+        super {|row_key, data| yield self.class.row_class.new(table: self, row_key: row_key, default_column_family: self.class.default_column_family, data: data) }
       end
 
       module ClassMethods
