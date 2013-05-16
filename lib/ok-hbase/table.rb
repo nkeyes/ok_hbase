@@ -142,15 +142,21 @@ module OkHbase
 
     def put(row_key, data, timestamp = nil)
       batch = self.batch(timestamp)
-      batch.put(row_key, data)
+
+      batch.transaction do |batch|
+        batch.put(row_key, data)
+      end
+
       batch.send_batch()
     end
 
     def delete(row_key, columns = nil, timestamp = nil)
       if columns
         batch = self.batch(timestamp)
-        batch.delete(row_key, columns)
-        batch.send_batch()
+        batch.transaction do |batch|
+          batch.delete(row_key, columns)
+        end
+
       else
         timestamp ? @connection.client.deleteAllRowTs(name, row_key, timestamp) :  @connection.client.deleteAllRow(name, row_key)
       end

@@ -59,6 +59,11 @@ module OkHbase
       send_batch if @batch_size && @mutation_count > @batch_size
     end
 
+    def transaction
+      yield self
+      send_batch
+    end
+
     private
 
     def _reset_mutations
