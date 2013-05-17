@@ -32,7 +32,7 @@ module OkHbase
       opts = DEFAULT_OPTS.merge opts
 
       raise ArgumentError.new ":transport must be one of: #{THRIFT_TRANSPORTS.keys}" unless THRIFT_TRANSPORTS.keys.include?(opts[:transport])
-      raise TypeError.new ":table_prefix must be a string" unless defined?(opts[:table_prefix]) && !opts[:table_prefix].is_a?(String)
+      raise TypeError.new ":table_prefix must be a string" if opts[:table_prefix] && !opts[:table_prefix].is_a?(String)
       raise TypeError.new ":table_prefix_separator must be a string" unless opts[:table_prefix_separator].is_a?(String)
 
 
@@ -72,7 +72,11 @@ module OkHbase
 
     def tables
       names = @client.getTableNames
-      names = names.map { |n| n[table_prefix.size...-1] if n.start_with?(table_prefix) } if table_prefix
+      if table_prefix
+        names = names.map do |n|
+          n["#{table_prefix}#{table_prefix_separator}".size..-1] if n.start_with?(table_prefix)
+        end
+      end
       names
     end
 

@@ -29,7 +29,11 @@ module OkHbase
 
       return if batch_mutations.blank?
 
-      @timestamp ? @table.connection.client.mutateRowsTs(table.name, batch_mutations, @timestamp) : @table.connection.client.mutateRows(@table.name, batch_mutations)
+      if @timestamp
+        @table.connection.client.mutateRowsTs(@table.name, batch_mutations, @timestamp)
+      else
+        @table.connection.client.mutateRows(@table.name, batch_mutations)
+      end
 
       _reset_mutations()
     end
@@ -38,7 +42,9 @@ module OkHbase
       @mutations[row_key] ||= []
 
       data.each_pair do |column, value|
-        @mutations[row_key] << Apache::Hadoop::Hbase::Thrift::Mutation.new(isDelete: false, column: column, value: value)
+        @mutations[row_key] << Apache::Hadoop::Hbase::Thrift::Mutation.new(
+            isDelete: false, column: column, value: value
+        )
       end
 
       @mutation_count += data.size
