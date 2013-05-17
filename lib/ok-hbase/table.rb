@@ -16,8 +16,8 @@ module OkHbase
     attr_accessor :name, :connection
 
     def initialize(name, connection)
-      @name = name
       @connection = connection
+      @name = @connection.send(:_table_name, name)
     end
 
     def families()
@@ -58,7 +58,7 @@ module OkHbase
 
       row_keys.map! { |r| r.force_encoding(Encoding::UTF_8) }
 
-      return {} if row_keys.empty?
+      return {} if row_keys.blank?
 
       rows = if timestamp
         raise TypeError.new "'timestamp' must be an integer" unless timestamp.is_a? Integer
@@ -146,8 +146,6 @@ module OkHbase
       batch.transaction do |batch|
         batch.put(row_key, data)
       end
-
-      batch.send_batch()
     end
 
     def delete(row_key, columns = nil, timestamp = nil)
