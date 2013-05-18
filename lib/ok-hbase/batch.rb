@@ -24,7 +24,7 @@ module OkHbase
 
     def send_batch()
       batch_mutations = @mutations.map do |row_key, mutations|
-        Apache::Hadoop::Hbase::Thrift::BatchMutation.new(row: row_key, mutations: mutations)
+        Apache::Hadoop::Hbase::Thrift::BatchMutation.new(row: row_key.dup.force_encoding(Encoding::UTF_8), mutations: mutations)
       end
 
       return if batch_mutations.blank?

@@ -7,8 +7,8 @@ describe OkHbase do
     let(:normal_string) { "foo baq" }
     let(:incremented_normal_string) { "foo bar" }
 
-    let(:utf8_string) { "Vulgar fraction one half: ¼" }
-    let(:incremented_utf8_string) { "Vulgar fraction one half: ½" }
+    let(:utf8_string) { "Vulgar fraction one half: ¼".force_encoding(Encoding::UTF_8) }
+    let(:incremented_utf8_string) { "Vulgar fraction one half: ½".force_encoding(Encoding::UTF_8) }
     let(:max_byte_string) { [255, 255, 255].pack('c*') }
 
     it "should increment the last byte byte < 255" do
