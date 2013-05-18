@@ -15,6 +15,6 @@ require 'rubygems'
 require 'bundler'
 require 'awesome_print'
 
-require 'ok-hbase'
+require 'ok_hbase'
 
 

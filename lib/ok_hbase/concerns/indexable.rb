@@ -1,4 +1,4 @@
-require 'ok-hbase/concerns/custom_row'
+require 'ok_hbase/concerns/custom_row'
 
 module OkHbase
   module Concerns

@@ -1,12 +1,12 @@
-# ok-hbase
+# ok_hbase
 
-Read the [wiki](https://github.com/okcwest/ok-hbase/wiki)!
+Read the [wiki](https://github.com/okcwest/ok_hbase/wiki)!
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'ok-hbase'
+    gem 'ok_hbase'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ok-hbase
+    $ gem install ok_hbase
 
 ## Usage
 

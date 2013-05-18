@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'ok-hbase/version'
+require 'ok_hbase/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "ok-hbase"
+  gem.name          = "ok_hbase"
   gem.version       = OkHbase::VERSION
   gem.authors       = ["Nathan Keyes"]
   gem.email         = ["keyes@okcupidlabs.com"]

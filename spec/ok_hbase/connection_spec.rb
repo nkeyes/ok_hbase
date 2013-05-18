@@ -6,7 +6,7 @@ module OkHbase
       let(:conn) { Connection.new auto_connect: true, timeout: 60 }
 
       it "should create tables with the right column families" do
-        name = "ok-hbase_test_table"
+        name = "ok_hbase_test_table"
         column_families = {
             'a' => {
                 'max_versions' => 5,
@@ -55,7 +55,7 @@ module OkHbase
 
 
       it "should create tables with the right name" do
-        name = "ok-hbase_test_table"
+        name = "ok_hbase_test_table"
         column_families = {
             'd' => {}
         }

@@ -1,8 +1,8 @@
 require 'active_support/all'
-require 'ok-hbase/version'
-require 'ok-hbase/connection'
-require 'ok-hbase/batch'
-require 'ok-hbase/table'
+require 'ok_hbase/version'
+require 'ok_hbase/connection'
+require 'ok_hbase/batch'
+require 'ok_hbase/table'
 
 module OkHbase
 

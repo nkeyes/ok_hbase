@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in ok-hbase.gemspec
+# Specify your gem's dependencies in ok_hbase.gemspec
 gemspec
 
 

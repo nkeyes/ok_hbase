@@ -8,7 +8,7 @@ module OkHbase
     let(:row_data2) { { 'd:foo' => 'Foo', 'd:bar' => 'bar', 'd:baz' => 'Baz' } }
     let!(:timestamp) { (Time.now.to_f * 1000).to_i } # hbase timestamps are in milisecnds
 
-    test_table_name = 'ok-hbase_test_table'
+    test_table_name = 'ok_hbase_test_table'
     conn = Connection.new(auto_connect: true, timeout: 60)
 
     before(:all) do
