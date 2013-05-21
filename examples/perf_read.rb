@@ -42,9 +42,7 @@ end
 
 def get_row_count(conn, prefix)
   row_count = 0
-  $logger.debug "Getting row count"
   conn.scan row_prefix: prefix, caching: 5000 do |row, cols|
-    $logger.debug row.to_s
     row_count += 1
   end
 
@@ -64,6 +62,25 @@ def perf_test_a()
     end
     [runs.sum, runs.sum/runs.size]
   end
+end
+
+def perf_test_b()
+  c = get_connection($options[:table])
+  filter = get_filter()
+  bench_times = []
+ 
+  $options[:iterations].times do |i|
+    bench_times.push(Benchmark.realtime { count = get_row_count(c, filter).to_s })
+    $logger.debug "Benchmark iteration ##{i}: #{bench_times[-1]} second(s)"
+  end
+
+  bench_times.each_with_index do |v,k|
+    puts "Run #{k}: #{v} second(s)"
+  end
+  puts "\nMedian: #{ bench_times[bench_times.length / 2] } second(s)"
+  puts "Average: #{ bench_times.inject(:+) / bench_times.length } second(s)"
+  puts "Higest Time: #{ bench_times.sort[-1] } second(s)"
+  puts "Lowest Time: #{ bench_times.sort[0] } second(s)"
 end
 
 def main()
@@ -123,7 +140,7 @@ def main()
   usage "You didn't specify an array literal" if not $options[:filter_array]
   usage "You didn't specify a binary sequence template" if not $options[:filter_pack]
 
-  perf_test_a()
+  perf_test_b()
 end
 
 main() if __FILE__ == $0
