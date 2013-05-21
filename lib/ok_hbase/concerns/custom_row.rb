@@ -12,7 +12,12 @@ module OkHbase
       end
 
       def scan(opts={})
-        super {|row_key, data| yield self.class.row_class.new(table: self, row_key: row_key, default_column_family: self.class.default_column_family, raw_data: data) }
+        if block_given?
+          super {|row_key, data| yield self.class.row_class.new(table: self, row_key: row_key, default_column_family: self.class.default_column_family, raw_data: data) }
+        else
+          super.map {|row_key, data| self.class.row_class.new(table: self, row_key: row_key, default_column_family: self.class.default_column_family, raw_data: data) }
+        end
+
       end
 
       module ClassMethods

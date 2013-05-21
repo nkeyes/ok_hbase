@@ -66,7 +66,7 @@ module OkHbase
     end
 
     def table(name, use_prefix=true)
-      name = _table_name(name) if use_prefix
+      name = table_name(name) if use_prefix
       OkHbase::Table.new(name, self)
     end
 
@@ -81,7 +81,7 @@ module OkHbase
     end
 
     def create_table(name, families)
-      name = _table_name(name)
+      name = table_name(name)
 
       raise ArgumentError.new "Can't create table #{name}. (no column families specified)" unless families
       raise TypeError.new "families' arg must be a hash" unless families.respond_to?(:[])
@@ -107,34 +107,38 @@ module OkHbase
     end
 
     def delete_table(name, disable=false)
-      name = _table_name(name)
+      name = table_name(name)
 
       disable_table(name) if disable && table_enabled?(name)
       client.deleteTable(name)
     end
 
     def enable_table(name)
-      name = _table_name(name)
+      name = table_name(name)
 
       client.enableTable(name)
     end
 
     def disable_table(name)
-      name = _table_name(name)
+      name = table_name(name)
 
       client.disableTable(name)
     end
 
     def table_enabled?(name)
-      name = _table_name(name)
+      name = table_name(name)
 
       client.isTableEnabled(name)
     end
 
     def compact_table(name, major=false)
-      name = _table_name(name)
+      name = table_name(name)
 
       major ? client.majorCompact(name) : client.compact(name)
+    end
+
+    def table_name(name)
+      table_prefix && !name.start_with?(table_prefix) ? [table_prefix, name].join(table_prefix_separator) : name
     end
 
     private
@@ -147,8 +151,6 @@ module OkHbase
 
     end
 
-    def _table_name(name)
-      table_prefix && !name.start_with?(table_prefix) ? [table_prefix, name].join(table_prefix_separator) : name
-    end
+
   end
 end
