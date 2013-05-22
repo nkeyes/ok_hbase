@@ -71,11 +71,11 @@ def perf_test_b()
  
   $options[:iterations].times do |i|
     bench_times.push(Benchmark.realtime { count = get_row_count(c, filter).to_s })
-    $logger.debug "Benchmark iteration ##{i}: #{bench_times[-1]} second(s)"
+    $logger.debug "Benchmark iteration ##{i+1}: #{bench_times[-1]} second(s)"
   end
 
   bench_times.each_with_index do |v,k|
-    puts "Run #{k}: #{v} second(s)"
+    puts "Run #{k+1}: #{v} second(s)"
   end
   puts "\nMedian: #{ bench_times[bench_times.length / 2] } second(s)"
   puts "Average: #{ bench_times.inject(:+) / bench_times.length } second(s)"
