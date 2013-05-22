@@ -1,4 +1,3 @@
-require 'ok_hbase/concerns/table'
 module OkHbase
   class Table
     include OkHbase::Concerns::Table

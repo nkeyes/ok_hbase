@@ -17,9 +17,25 @@ module OkHbase
 
       attr_accessor :table_name, :connection
 
+      def table_name
+        @table_name
+      end
+
+      def table_name=(val)
+        @table_name = val
+      end
+
+      def self.connection
+        @self.connection
+      end
+
+      def self.connection=(val)
+        @self.connection = val
+      end
+
 
       def families()
-        descriptors = connection.client.getColumnDescriptors(connection.table_name(table_name))
+        descriptors = self.connection.client.getColumnDescriptors(self.connection.table_name(table_name))
 
         families = {}
 
@@ -31,7 +47,7 @@ module OkHbase
       end
 
       def regions
-        regions = connection.client.getTableRegions(connection.table_name(table_name))
+        regions = self.connection.client.getTableRegions(self.connection.table_name(table_name))
         regions.map { |r| OkHbase.thrift_type_to_dict(r) }
       end
 
@@ -43,9 +59,9 @@ module OkHbase
         rows = if timestamp
           raise TypeError.new "'timestamp' must be an integer" unless timestamp.is_a? Integer
 
-          connection.client.getRowWithColumnsTs(connection.table_name(table_name), row_key, columns, timestamp)
+          self.connection.client.getRowWithColumnsTs(self.connection.table_name(table_name), row_key, columns, timestamp)
         else
-          connection.client.getRowWithColumns(connection.table_name(table_name), row_key, columns)
+          self.connection.client.getRowWithColumns(self.connection.table_name(table_name), row_key, columns)
         end
 
         rows.empty? ? {} : _make_row(rows[0].columns, include_timestamp)
@@ -63,9 +79,9 @@ module OkHbase
 
           columns = _column_family_names() unless columns
 
-          connection.client.getRowsWithColumnsTs(connection.table_name(table_name), row_keys, columns, timestamp)
+          self.connection.client.getRowsWithColumnsTs(self.connection.table_name(table_name), row_keys, columns, timestamp)
         else
-          connection.client.getRowsWithColumns(connection.table_name(table_name), row_keys, columns)
+          self.connection.client.getRowsWithColumns(self.connection.table_name(table_name), row_keys, columns)
         end
 
         rows.map { |row| _make_row(row.columns, include_timestamp) }
@@ -83,9 +99,9 @@ module OkHbase
         cells = if timestamp
           raise TypeError.new "'timestamp' must be an integer" unless timestamp.is_a? Integer
 
-          connection.client.getVerTs(connection.table_name(table_name), row_key, column, timestamp, versions)
+          self.connection.client.getVerTs(self.connection.table_name(table_name), row_key, column, timestamp, versions)
         else
-          connection.client.getVer(connection.table_name(table_name), row_key, column, versions)
+          self.connection.client.getVer(self.connection.table_name(table_name), row_key, column, versions)
         end
 
         cells.map { |cell| include_timestamp ? [cell.value, cell.timestamp] : cell.value }
@@ -111,8 +127,7 @@ module OkHbase
 
         scanner = _scanner(opts)
 
-
-        scanner_id = connection.client.scannerOpenWithScan(connection.table_name(table_name), scanner)
+        scanner_id = self.connection.client.scannerOpenWithScan(self.connection.table_name(table_name), scanner)
 
         fetched_count = returned_count = 0
 
@@ -121,9 +136,9 @@ module OkHbase
             how_many = opts[:limit] ? [opts[:caching], opts[:limit] - returned_count].min : opts[:caching]
 
             items = if how_many == 1
-              connection.client.scannerGet(scanner_id)
+              self.connection.client.scannerGet(scanner_id)
             else
-              connection.client.scannerGetList(scanner_id, how_many)
+              self.connection.client.scannerGetList(scanner_id, how_many)
             end
 
             fetched_count += items.length
@@ -140,7 +155,7 @@ module OkHbase
             break if items.length < how_many
           end
         ensure
-          connection.client.scannerClose(scanner_id)
+          self.connection.client.scannerClose(scanner_id)
         end
         rows
       end
@@ -161,7 +176,7 @@ module OkHbase
           end
 
         else
-          timestamp ? connection.client.deleteAllRowTs(connection.table_name(table_name), row_key, timestamp) : connection.client.deleteAllRow(connection.table_name(table_name), row_key)
+          timestamp ? self.connection.client.deleteAllRowTs(self.connection.table_name(table_name), row_key, timestamp) : self.connection.client.deleteAllRow(self.connection.table_name(table_name), row_key)
         end
       end
 
@@ -180,7 +195,7 @@ module OkHbase
       end
 
       def counter_inc(row_key, column, value = 1)
-        connection.client.atomicIncrement(connection.table_name(table_name), row_key, column, value)
+        self.connection.client.atomicIncrement(self.connection.table_name(table_name), row_key, column, value)
       end
 
       def counter_dec(row_key, column, value = 1)
@@ -190,7 +205,7 @@ module OkHbase
       alias_method :find, :scan
 
       def _column_family_names()
-        connection.client.getColumnDescriptors(connection.table_name(table_name)).keys()
+        self.connection.client.getColumnDescriptors(self.connection.table_name(table_name)).keys()
       end
 
       def _scanner(opts)

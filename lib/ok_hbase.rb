@@ -1,9 +1,5 @@
 require 'active_support/all'
-require 'ok_hbase/version'
-require 'ok_hbase/connection'
-require 'ok_hbase/batch'
-require 'ok_hbase/concerns/table'
-require 'ok_hbase/table'
+
 
 module OkHbase
 
@@ -33,3 +29,17 @@ module OkHbase
     Hash[obj.class::FIELDS.map{ |k, v| [v[:name].underscore, obj.send(v[:name])]}]
   end
 end
+
+
+require 'ok_hbase/version'
+require 'ok_hbase/connection'
+require 'ok_hbase/batch'
+require 'ok_hbase/concerns/table'
+require 'ok_hbase/concerns/row'
+require 'ok_hbase/concerns/custom_row'
+require 'ok_hbase/concerns/indexable'
+require 'ok_hbase/concerns/table/class_methods'
+require 'ok_hbase/concerns/custom_row/class_methods'
+require 'ok_hbase/concerns/indexable/class_methods'
+require 'ok_hbase/table'
+require 'ok_hbase/row'

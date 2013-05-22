@@ -2,6 +2,7 @@ module OkHbase
   module Concerns
     module Row
       attr_accessor :table, :row_key, :timestamp, :default_column_family
+      attr_reader :raw_data
 
       def id
         self.row_key
@@ -24,7 +25,6 @@ module OkHbase
         ].with_indifferent_access
 
         hash[:row_key] = @row_key
-        ap hash
         hash
 
       end
@@ -32,35 +32,34 @@ module OkHbase
       def save!()
         #raise ArgumentError.new "row_key must be a non-empty string" unless !@row_key.blank? && @row_key.is_a?(String)
 
-        @table.put(@row_key, encoded_data, @timestamp)
+        table.put(row_key, encoded_data, timestamp)
       end
 
       def delete
-        @table.delete(row_key)
+        table.delete(row_key)
       end
 
 
       def method_missing(method, *arguments, &block)
-
         if method.to_s[-1, 1] == '='
 
           key = method[0...-1]
           val = arguments.last
           unless key.to_s.include? ':'
-            key = "#{@default_column_family}:#{key}"
+            key = "#{default_column_family}:#{key}"
           else
           end
 
-          ret_val = @raw_data[key] = val
+          ret_val = raw_data[key] = val
 
           ret_val
         else
 
           unless method.to_s.include? ':'
-            key = "#{@default_column_family}:#{method}"
+            key = "#{default_column_family}:#{method}"
           else
           end
-          return @raw_data[key]
+          return raw_data[key]
         end
 
       end

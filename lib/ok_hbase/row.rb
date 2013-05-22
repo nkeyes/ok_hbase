@@ -1,13 +1,11 @@
-require 'ok_hbase/concerns/row'
 module OkHbase
   class Row
     include OkHbase::Concerns::Row
 
     def initialize(opts={})
-
       opts = opts.with_indifferent_access
 
-      raise ArgumentError.new "'table' must be an OkHBase::Table" unless opts[:table] && opts[:table].is_a?(OkHbase::Table)
+      raise ArgumentError.new "'table' must be an OkHBase::Table" unless opts[:table] && opts[:table].is_a?(OkHbase::Concerns::Table)
       @default_column_family = opts[:default_column_family]
 
       @table = opts[:table]
@@ -19,6 +17,5 @@ module OkHbase
         send(:"#{k}=", v)
       end
     end
-
   end
 end
