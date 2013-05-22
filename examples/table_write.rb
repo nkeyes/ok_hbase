@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/bin/ruby
+#!/usr/bin/env ruby
 #
 # table_write.rb - basic table batch and single write operations
 

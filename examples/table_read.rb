@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/bin/ruby
+#!/usr/bin/env ruby
 #
 # table_read.rb - basic table read examples
 

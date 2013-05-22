@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/bin/ruby
+#!/usr/bin/env ruby
 #
 # perf_read.rb - basic read perf test
 

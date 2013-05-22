@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/bin/ruby
+#!/usr/bin/env ruby
 #
 # perf_write.rb - basic table write benchmarks
 
