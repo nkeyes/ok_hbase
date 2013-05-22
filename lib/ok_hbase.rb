@@ -2,6 +2,7 @@ require 'active_support/all'
 require 'ok_hbase/version'
 require 'ok_hbase/connection'
 require 'ok_hbase/batch'
+require 'ok_hbase/concerns/table'
 require 'ok_hbase/table'
 
 module OkHbase

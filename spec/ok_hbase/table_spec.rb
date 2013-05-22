@@ -32,7 +32,7 @@ module OkHbase
       } }
 
       it 'should set all the options' do
-        scanner = subject.class.send(:_scanner, scanner_opts)
+        scanner = subject._scanner(scanner_opts)
 
         scanner.startRow.should == scanner_opts[:start_row]
         scanner.stopRow.should == scanner_opts[:stop_row]
@@ -50,7 +50,7 @@ module OkHbase
         subject.put('scan_row2', row_data1)
 
         opts = { row_prefix: 'scan' }
-        subject.class.should_receive(:_scanner).with(hash_including(start_row: 'scan', stop_row: 'scao')).and_return {
+        subject.should_receive(:_scanner).with(hash_including(start_row: 'scan', stop_row: 'scao')).and_return {
           Apache::Hadoop::Hbase::Thrift::TScan.new(
               startRow: 'scan',
               stopRow: 'scao',
