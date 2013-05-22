@@ -4,7 +4,7 @@ module OkHbase
       extend ActiveSupport::Concern
 
       def row(row_key, columns = nil, timestamp = nil, include_timestamp = false)
-        @@_row_class.new table: self, default_column_family: self.class.default_column_family, raw_data: super
+        self.class.row_class.new table: self, default_column_family: self.class.default_column_family, raw_data: super
       end
 
       def rows(row_keys, columns = nil, timestamp = nil, include_timestamp = false)
