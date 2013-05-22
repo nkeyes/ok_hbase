@@ -161,7 +161,7 @@ module OkHbase
           end
 
         else
-          timestamp ? @connection.client.deleteAllRowTs(connection.table_name(table_name), row_key, timestamp) : @connection.client.deleteAllRow(connection.table_name(table_name), row_key)
+          timestamp ? connection.client.deleteAllRowTs(connection.table_name(table_name), row_key, timestamp) : connection.client.deleteAllRow(connection.table_name(table_name), row_key)
         end
       end
 
