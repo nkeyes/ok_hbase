@@ -15,7 +15,7 @@ module OkHbase
         @@_indexes = @@_indexes.with_indifferent_access
         @@_indexes[index_name] = options
 
-        define_method :indexes do
+        define_singleton_method :indexes do
           @@_indexes
         end
 
@@ -78,10 +78,9 @@ module OkHbase
 
         define_singleton_method :delete do |row_key, columns=nil, timestamp=nil, indexes=[]|
           row = self.row(row_key)
-          if row.attributes.blank?
-            #ap blank: row_key, attributes: row.attributes
+          attributes = row.attributes
+          if attributes[:row_key].blank? && attributes.except(:row_key).blank?
             return
-          else
           end
 
           indexes = Array(indexes)
