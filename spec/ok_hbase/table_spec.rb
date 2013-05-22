@@ -4,8 +4,8 @@ module OkHbase
   describe Table do
     let(:row_key1) { 'row1' }
     let(:row_key2) { 'row2' }
-    let(:row_data1) { { 'd:foo' => 'Foo', 'd:bar' => 'bar', 'd:baz' => 'Baz' } }
-    let(:row_data2) { { 'd:foo' => 'Foo', 'd:bar' => 'bar', 'd:baz' => 'Baz' } }
+    let(:row_data1) { { 'd:foo' => 'Foo1', 'd:bar' => 'Bar1', 'd:baz' => 'Baz1' } }
+    let(:row_data2) { { 'd:foo' => 'Foo2', 'd:bar' => 'Bar2', 'd:baz' => 'Baz2' } }
     let!(:timestamp) { (Time.now.to_f * 1000).to_i } # hbase timestamps are in milisecnds
 
     test_table_name = 'ok_hbase_test_table'
@@ -102,31 +102,32 @@ module OkHbase
           subject.put(row_key2, row_data2.merge('d:foo' => 'OldFoo2'), timestamp-5)
           subject.put(row_key2, row_data2, timestamp)
 
-          subject.cells(row_key2, 'd:foo').should == ['Foo', 'OldFoo2', 'OldFoo1']
+          subject.cells(row_key2, 'd:foo').should == ['Foo2', 'OldFoo2', 'OldFoo1']
 
           subject.cells(row_key2, 'd:foo', nil, timestamp-1).should == ['OldFoo2', 'OldFoo1']
-          subject.cells(row_key2, 'd:foo', nil, timestamp-6).should == ['OldFoo1']
+          subject.cells(row_key2, 'd:foo', nil, timestamp-5).should == ['OldFoo1']
 
-          subject.cells(row_key2, 'd:foo', nil, nil, true).should == [['Foo', timestamp], ['OldFoo2', timestamp-5], ['OldFoo1', timestamp-10]]
-          subject.cells(row_key2, 'd:foo', 2, nil, true).should == [['Foo', timestamp], ['OldFoo2', timestamp-5]]
-          subject.cells(row_key2, 'd:foo', 1, nil, true).should == [['Foo', timestamp]]
+          subject.cells(row_key2, 'd:foo', nil, nil, true).should == [['Foo2', timestamp], ['OldFoo2', timestamp-5], ['OldFoo1', timestamp-10]]
+          subject.cells(row_key2, 'd:foo', 2, nil, true).should == [['Foo2', timestamp], ['OldFoo2', timestamp-5]]
+          subject.cells(row_key2, 'd:foo', 1, nil, true).should == [['Foo2', timestamp]]
 
-          subject.cells(row_key2, 'd:foo', nil, nil, false).should == ['Foo', 'OldFoo2', 'OldFoo1']
-          subject.cells(row_key2, 'd:foo', 2, nil, false).should == ['Foo', 'OldFoo2']
-          subject.cells(row_key2, 'd:foo', 1, nil, false).should == ['Foo']
+          subject.cells(row_key2, 'd:foo', nil, nil, false).should == ['Foo2', 'OldFoo2', 'OldFoo1']
+          subject.cells(row_key2, 'd:foo', 2, nil, false).should == ['Foo2', 'OldFoo2']
+          subject.cells(row_key2, 'd:foo', 1, nil, false).should == ['Foo2']
 
         end
       end
 
       describe ".rows" do
         it 'should retrieve the specified rows' do
-          subject.put(row_key1, row_data1)
+
+          subject.put(row_key1, row_data1, timestamp-10)
           subject.put(row_key2, row_data2.merge('d:foo' => 'OldFoo1'), timestamp-10)
           subject.put(row_key2, row_data2.merge('d:foo' => 'OldFoo2'), timestamp-5)
           subject.put(row_key2, row_data2, timestamp)
 
           subject.rows([row_key1, row_key2]).should == [row_data1, row_data2]
-          subject.rows([row_key1, row_key2], nil, timestamp-5).should == [row_data1, row_data2.merge('d:foo' => 'OldFoo1')]
+          subject.rows([row_key1, row_key2], nil, timestamp-9).should == [row_data1, row_data2.merge('d:foo' => 'OldFoo1')]
 
           subject.rows([row_key1, row_key2], row_data1.keys - ['d:foo']).should == [row_data1.except('d:foo'), row_data2.except('d:foo')]
           subject.rows([row_key1, row_key2], row_data1.keys - ['d:foo'], timestamp-5).should == [row_data1.except('d:foo'), row_data2.except('d:foo')]

@@ -1,6 +1,6 @@
 module OkHbase
   class Row
-    attr_accessor :table, :row_key, :raw_data, :timestamp, :default_column_family
+    attr_accessor :table, :row_key, :timestamp, :default_column_family
 
     def initialize(opts={})
 
@@ -12,19 +12,45 @@ module OkHbase
       @table = opts[:table]
 
       @row_key = opts[:row_key]
-      @raw_data = {}
+      @raw_data = {}.with_indifferent_access
       opts[:raw_data].each_pair do |k, v|
 
         send(:"#{k}=", v)
       end
     end
 
-    def save!
+    def id
+      self.row_key
+    end
+
+    def id=(val)
+      self.row_key = val
+    end
+
+    def encoded_data
+      Hash[@raw_data.map { |k, v| [k, _encode(v)] }].with_indifferent_access
+    end
+
+    def attributes
+      Hash[@raw_data.keys.map do |k|
+        k = k.split(':', 2).last
+        key_value = [k, send(k)]
+        key_value
+      end
+      ].with_indifferent_access
+
+    end
+
+    def save!()
       #raise ArgumentError.new "row_key must be a non-empty string" unless !@row_key.blank? && @row_key.is_a?(String)
 
-      encoded_data = Hash[@raw_data.map { |k, v| [k, _encode(v)] }]
       @table.put(@row_key, encoded_data, @timestamp)
     end
+
+    def delete
+      @table.delete(row_key)
+    end
+
 
     def method_missing(method, *arguments, &block)
 
@@ -60,7 +86,7 @@ module OkHbase
           [value].pack('Q>').force_encoding(Encoding::UTF_8)
         when TrueClass, FalseClass
           value.to_s.force_encoding(Encoding::UTF_8)
-        when NilClass, TrueClass, FalseClass
+        when NilClass
           value
       end
 

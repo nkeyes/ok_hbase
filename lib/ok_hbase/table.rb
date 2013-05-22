@@ -50,7 +50,7 @@ module OkHbase
         connection.client.getRowWithColumns(connection.table_name(table_name), row_key, columns)
       end
 
-      rows ? self.class._make_row(rows[0].columns, include_timestamp) : {}
+      rows.empty? ? {} : self.class._make_row(rows[0].columns, include_timestamp)
     end
 
     def rows(row_keys, columns = nil, timestamp = nil, include_timestamp = false)
@@ -171,8 +171,14 @@ module OkHbase
       Batch.new(self, timestamp, batch_size, transaction)
     end
 
+    def counter_get(row_key, column)
+      counter_inc(row_key, column, 0)
+    end
+
     def counter_set(row_key, column, value = 0)
-      put(row_key, { column => [value].pack('Q>') })
+      self.batch.transaction do |batch|
+        batch.put(row_key, { column => [value].pack('Q>') })
+      end
     end
 
     def counter_inc(row_key, column, value = 1)
