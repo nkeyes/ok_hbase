@@ -217,6 +217,7 @@ module OkHbase
           const_value = Apache::Hadoop::Hbase::Thrift::TScan.const_get(const) rescue nil
 
           if const_value
+            v.force_encoding(Encoding::UTF_8) if v.is_a?(String)
             OkHbase.logger.info "setting scanner.#{scanner_fields[const_value][:name]}: #{v}"
             scanner.send("#{scanner_fields[const_value][:name]}=", v)
           else
