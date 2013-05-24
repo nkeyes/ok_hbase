@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = OkHbase::VERSION
   gem.authors       = ["Nathan Keyes"]
   gem.email         = ["keyes@okcupidlabs.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Lightweight Ruby Hbase Client}
+  gem.summary       = %q{Lightweight Ruby Hbase Client}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
