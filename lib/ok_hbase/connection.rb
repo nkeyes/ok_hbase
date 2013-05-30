@@ -6,6 +6,8 @@ require 'thrift/hbase/hbase_constants'
 require 'thrift/hbase/hbase_types'
 require 'thrift/hbase/hbase'
 
+require 'ok_hbase/client'
+
 module OkHbase
   class Connection
 
@@ -17,7 +19,8 @@ module OkHbase
         auto_connect: false,
         table_prefix: nil,
         table_prefix_separator: '_',
-        transport: :buffered
+        transport: :buffered,
+        max_tries: 3
     }.freeze
 
     THRIFT_TRANSPORTS = {
@@ -25,7 +28,7 @@ module OkHbase
         framed: Thrift::FramedTransport,
     }
 
-    attr_accessor :host, :port, :timeout, :auto_connect, :table_prefix, :table_prefix_separator
+    attr_accessor :host, :port, :timeout, :auto_connect, :table_prefix, :table_prefix_separator, :max_tries
     attr_reader :client
 
     def initialize(opts={})
@@ -39,6 +42,7 @@ module OkHbase
       @host = opts[:host]
       @port = opts[:port]
       @timeout = opts[:timeout]
+      @max_tries = opts[:max_tries]
       @auto_connect = opts[:auto_connect]
       @table_prefix = opts[:table_prefix]
       @table_prefix_separator = opts[:table_prefix_separator]
@@ -71,7 +75,7 @@ module OkHbase
     end
 
     def tables
-      names = @client.getTableNames
+      names = client.getTableNames
       if table_prefix
         names = names.map do |n|
           n["#{table_prefix}#{table_prefix_separator}".size..-1] if n.start_with?(table_prefix)
@@ -147,10 +151,7 @@ module OkHbase
       socket = Thrift::Socket.new(host, port, timeout)
       @transport = @transport_class.new(socket)
       protocol = Thrift::BinaryProtocolAccelerated.new(@transport)
-      @client = Apache::Hadoop::Hbase::Thrift::Hbase::Client.new(protocol)
-
+      @client = OkHbase::Client.new(protocol, nil, max_tries)
     end
-
-
   end
 end
