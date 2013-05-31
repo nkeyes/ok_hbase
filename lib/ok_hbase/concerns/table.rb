@@ -1,3 +1,5 @@
+require 'ok_hbase/concerns/table/batch'
+
 module OkHbase
   module Concerns
     module Table

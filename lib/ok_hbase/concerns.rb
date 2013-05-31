@@ -4,8 +4,8 @@ module OkHbase
   end
 end
 require 'ok_hbase/concerns/table'
-
 require 'ok_hbase/concerns/table/class_methods'
+require 'ok_hbase/concerns/table/instrumentation'
 require 'ok_hbase/concerns/row'
 require 'ok_hbase/concerns/custom_row'
 require 'ok_hbase/concerns/custom_row/class_methods'

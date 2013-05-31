@@ -63,36 +63,36 @@ module OkHbase
 
           scan(row_prefix: row_prefix, &block)
         end
+      end
 
-        define_singleton_method :put do |row_key, data, timestamp = nil, extra_indexes=[]|
-          self.batch(timestamp).transaction do |batch|
-            @@_indexes.each_pair do |index_name, options|
-              next unless options[:auto_create] || extra_indexes.include?(index_name)
+      def put(row_key, data, timestamp = nil, extra_indexes=[])
+        batch(timestamp).transaction do |batch|
+          @@_indexes.each_pair do |index_name, options|
+            next unless options[:auto_create] || extra_indexes.include?(index_name)
 
-              index_row_key = key_for_index(index_name, data)
+            index_row_key = key_for_index(index_name, data)
 
-              batch.put(index_row_key, data)
-            end
+            batch.put(index_row_key, data)
           end
         end
+      end
 
-        define_singleton_method :delete do |row_key, columns=nil, timestamp=nil, indexes=[]|
-          row = self.row(row_key)
-          attributes = row.attributes
-          if attributes[:row_key].blank? && attributes.except(:row_key).blank?
-            return
-          end
+      def delete(row_key, columns=nil, timestamp=nil, indexes=[])
+        row = self.row(row_key)
+        attributes = row.attributes
+        if attributes[:row_key].blank? && attributes.except(:row_key).blank?
+          return
+        end
 
-          indexes = Array(indexes)
+        indexes = Array(indexes)
 
-          if indexes.empty?
-            indexes = @@_indexes.keys
-          end
-          self.batch(timestamp).transaction do |batch|
-            indexes.each do |index_name|
-              index_row_key = key_for_index(index_name, row.attributes)
-              batch.delete(index_row_key, columns)
-            end
+        if indexes.empty?
+          indexes = @@_indexes.keys
+        end
+        self.batch(timestamp).transaction do |batch|
+          indexes.each do |index_name|
+            index_row_key = key_for_index(index_name, row.attributes)
+            batch.delete(index_row_key, columns)
           end
         end
       end
