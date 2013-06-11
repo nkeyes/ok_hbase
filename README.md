@@ -1,5 +1,7 @@
 # ok_hbase
 
+Welcome HBase cowboys.
+
 Read the [wiki](https://github.com/okcwest/ok-hbase/wiki)!
 
 ## Installation
