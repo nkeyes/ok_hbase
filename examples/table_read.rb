@@ -53,7 +53,7 @@ def get_row_count(conn, prefix)
 end
 
 def main()
-  optparse = OptionParser.new do|opts|
+  $optparse = OptionParser.new do|opts|
     opts.banner = "Usage: #{__FILE__} [options]"
 
     $options[:verbose] = false
@@ -97,7 +97,7 @@ def main()
 
   usage "You didn't specify any options" if not ARGV[0]
 
-  optparse.parse!
+  $optparse.parse!
 
   usage "You didn't specify a hostname" if not $options[:hostname]
   usage "You didn't specify a table" if not $options[:table]
