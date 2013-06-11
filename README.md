@@ -18,7 +18,23 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```bash
+$ bundle console
+Resolving dependencies...
+irb(main):030:0> connection = OkHbase::Connection.new(host: "hbase-dev")
+=> #<OkHbase::Connection:0x00000002440140 <snip>
+irb(main):031:0> table = OkHbase::Table.new(mytable, connection)
+=> #<OkHbase::Table:0x00000002449f38 <snip> 
+irb(main):032:0> count = 0
+=> 0
+irb(main):033:0> table.scan row_prefix: [ myid, 1, 5, 1, 0 ].pack("L>CCCC") do |row, col|
+irb(main):034:1*   count += 1
+irb(main):035:1> end
+=> nil
+irb(main):036:0> count
+=> 1072
+irb(main):037:0> connection.close
+```
 
 ## Contributing
 
