@@ -7,7 +7,7 @@ Simple examples to illustrate using the api to do basic work.
 
 First we create a table, and put a bunch of data in it.
 This command will crate a table named 'ok_hbase_test', withs a single column family: 'd'.
-It then sequentially creates rows with row keys a through zzz, 17576 rows in total.
+It then sequentially creates rows with row keys a through zzz, 18278 rows in total.
 That may take a few minutes, as we are not batching the writes.
 
 ```bash
@@ -36,3 +36,8 @@ Nathans-MacBook-Pro-2:ok_hbase nkeyes$ ./examples/table_scan.rb  --host localhos
 }
 Nathans-MacBook-Pro-2:ok_hbase nkeyes$
 ```
+
+Experiment with shorter prefixes to see more rows returned.
+An empty prefix will return all rows:
+
+
