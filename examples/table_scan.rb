@@ -34,17 +34,13 @@ def get_connection
   )
 end
 
-def create_table(table, conn)
+def get_table(table, conn)
   if table.nil?
     $logger.fatal 'Must specify a table'
     return nil
   end
   $logger.debug "Get instance for table #{table}"
-  if conn.tables.include? table
-    OkHbase::Table.new(table, conn)
-  else
-    conn.create_table(table, d: {})
-  end
+  OkHbase::Table.new(table, conn)
 end
 
 
@@ -76,6 +72,11 @@ def main()
       $options[:timeout] = timeout.to_i
     end
 
+    opts.on('-P', '--prefix ROW_PREFIX', "row prefix to use in scan") do |prefix|
+      $options[:prefix] = prefix
+    end
+
+
   end
 
   usage "You didn't specify any options" if not ARGV[0]
@@ -83,14 +84,13 @@ def main()
   $optparse.parse!
 
   usage "You didn't specify a table" if not $options[:table]
+  usage "You didn't specify a prefix" if not $options[:prefix]
 
   connection = get_connection()
-  table = create_table($options[:table], connection)
+  table = get_table($options[:table], connection)
 
-  ('a'..'zzz').each_with_index do |row_key, index|
-    $logger.debug "wrote row: #{row_key}"
-    table.put(row_key, {'d:row_number' => "#{index+1}", 'd:message' => "this is row number #{index+1}"})
-    $logger.debug "wrote row: #{row_key}"
+  table.scan(row_prefix: $options[:prefix]) do |row_key, columns|
+    ap row_key => columns
   end
 end
 

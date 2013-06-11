@@ -1,5 +1,5 @@
 # okhbase examples
-Simple examples to illustrate using the api to do basic work. 
+Examples to illustrate using the api to do basic work.
 
 ## Usage
 
