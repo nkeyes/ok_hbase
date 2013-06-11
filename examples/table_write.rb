@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# table_write.rb - basic table batch and single write operations
+# perf_read.rb - basic read perf test
 
 $:.unshift File.expand_path('../../lib', __FILE__)
 $stdout.sync = true
@@ -13,7 +13,7 @@ require 'logger'
 $options = {}
 $logger = Logger.new(STDOUT)
 $logger.formatter = proc { |severity, datetime, progname, msg| "#{datetime} #{severity}: #{msg}\n" }
-$logger.level = Logger::FATAL
+$logger.level = Logger::INFO
 
 def usage(error=nil)
   puts "Error: #{error}\n\n" if error
@@ -21,65 +21,52 @@ def usage(error=nil)
   exit 1
 end
 
-def get_connection(table=nil)
-  $logger.debug "Setting up connection for table #{table}"
+def get_connection
+  $logger.debug 'Setting up connection'
+
+
+  $logger.debug "Connecting to #{$options[:host]}"
+  OkHbase::Connection.new(
+      auto_connect: true,
+      host: $options[:host],
+      port: $options[:port],
+      timeout: $options[:timeout]
+  )
+end
+
+def get_table(table, conn)
   if table.nil?
-    $logger.fatal "Must specify a table"
+    $logger.fatal 'Must specify a table'
     return nil
   end
-    
-  $logger.debug "Connecting to #{$options[:hostname]}"
-  conn = OkHbase::Connection.new(auto_connect: true, host: $options[:hostname], port: $options[:port],
-      timeout: $options[:timeout])
   $logger.debug "Get instance for table #{table}"
   OkHbase::Table.new(table, conn)
 end
 
-def write_test_row(conn, rowkey)
-  # set any column family shit
-  # use a pack method to build the binary sequence
-  puts 'wrote all the things'
-end
-
-def write_batch_row(conn, rowkey)
-  # set any column family shit
-
-  $options[:rowcount].times do |i|
-    # increment and write
-    puts 'wrote something things'
+def get_row_count(conn, prefix)
+  row_count = 0
+  conn.scan row_prefix: prefix, caching: 5000 do |row, cols|
+    row_count += 1
   end
+
+  row_count
 end
 
-
-def get_rowkey()
-  # get a incrementor value if needed
-  # set attributes for a row key
-  # setup any time data
-  # use a pack method to build the binary sequence
-  # return binary sequence or decimal sequence to ok-hbase
-  puts "rowkey"
-end
 
 def main()
-  $optparse = OptionParser.new do|opts|
+  $optparse = OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} [options]"
 
-    $options[:verbose] = false
+    $options[:host] = 'localhost'
     $options[:port] = 9090
     $options[:timeout] = 600
-    $options[:rowcount] = 1
 
     opts.on('-h', '--help', 'Display this help') do
       usage
     end
 
-    opts.on('-v', '--verbose', 'Output json result') do
-      $options[:verbose] = true
-      $logger.level = Logger::DEBUG
-    end
-   
-    opts.on('-n', '--host HOSTNAME', 'hostname of RegionServer or  master') do |hostname|
-      $options[:hostname] = hostname
+    opts.on('-H', '--host HOST', "host or ip address where thrift server is running, defaults to #{$options[:host]}") do |host|
+      $options[:host] = host
     end
 
     opts.on('-t', '--table TABLE', 'hbase table name') do |table|
@@ -94,17 +81,10 @@ def main()
       $options[:timeout] = timeout.to_i
     end
 
-    opts.on('-a', '--array ARRAY', Array, "array values for pack for rowkey, comma separated, no whitespace in the format of \"11111111,1,1,1,1\"") do |ar|
-      $options[:filter_array] = ar.map(&:to_i)
+    opts.on('-P', '--prefix ROW_PREFIX', "row prefix to use in scan") do |prefix|
+      $options[:prefix] = prefix
     end
 
-    opts.on('-p', '--pack PACK', "template string to build binary sequence from literal passed to -a") do |pack|
-      $options[:filter_pack] = pack.to_s
-    end
-
-    opts.on('-w', '--write ROWS', "how many times to write with a row key defaults to #{$options[:rowcount]}") do |row|
-      $options[:rowcount] = row.to_i
-    end
 
   end
 
@@ -112,17 +92,15 @@ def main()
 
   $optparse.parse!
 
-  usage "You didn't specify a hostname" if not $options[:hostname]
   usage "You didn't specify a table" if not $options[:table]
-  usage "You didn't specify an array literal" if not $options[:filter_array]
-  usage "You didn't specify a binary sequence template" if not $options[:filter_pack]
+  usage "You didn't specify a prefix" if not $options[:prefix]
 
-  start_time = Time.now
-  c = get_connection($options[:table])
-  row_key = get_rowkey()
-  write_batch_row(c, row_key)
-  total_time = Time.now - start_time
-  puts "Wrote #{$options[:rowcount]} row(s) in #{total_time} second(s)"
+  connection = get_connection()
+  table = get_table($options[:table], connection)
+
+  table.scan(row_prefix: $options[:prefix]) do |row_key, columns|
+    ap row_key => columns
+  end
 end
 
 main() if __FILE__ == $0
