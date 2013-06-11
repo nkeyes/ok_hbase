@@ -40,4 +40,7 @@ Nathans-MacBook-Pro-2:ok_hbase nkeyes$
 Experiment with shorter prefixes to see more rows returned.
 An empty prefix will return all rows:
 
+```bash
+./table_scan.rb  --host localhost --table ok_hbase_test --prefix ''
+```
 
