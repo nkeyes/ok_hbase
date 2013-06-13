@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["keyes@okcupidlabs.com"]
   gem.description   = %q{Lightweight Ruby Hbase Client}
   gem.summary       = %q{Lightweight Ruby Hbase Client}
-  gem.homepage      = ""
+  gem.homepage      = "http://okcwest.github.io/ok_hbase/"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
