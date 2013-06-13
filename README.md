@@ -2,7 +2,7 @@
 
 Welcome HBase cowboys.
 
-Read the [wiki](https://github.com/okcwest/ok-hbase/wiki)!
+Read the [pages site](http://okcwest.github.io/ok_hbase/)!
 
 ## Installation
 
@@ -20,22 +20,47 @@ Or install it yourself as:
 
 ## Usage
 
-```bash
-$ bundle console
-Resolving dependencies...
-irb(main):030:0> connection = OkHbase::Connection.new(host: "hbase-dev")
-=> #<OkHbase::Connection:0x00000002440140 <snip>
-irb(main):031:0> table = OkHbase::Table.new(mytable, connection)
-=> #<OkHbase::Table:0x00000002449f38 <snip> 
-irb(main):032:0> count = 0
-=> 0
-irb(main):033:0> table.scan row_prefix: [ myid, 1, 5, 1, 0 ].pack("L>CCCC") do |row, col|
-irb(main):034:1*   count += 1
-irb(main):035:1> end
-=> nil
-irb(main):036:0> count
-=> 1072
-irb(main):037:0> connection.close
+```ruby
+# simple example showing how to:
+# 1) connect
+# 2) create a table
+# 3) write rows
+# 4) scan for rows
+# 5) get a row by key
+# 6) delete a table
+
+require 'ok_hbase'
+
+# get a connection
+conn = OkHbase::Connection.new(
+  host: 'localhost',
+  port: 9090,
+  auto_connect: true
+)
+
+# create a new table with column family 'd'
+table = conn.create_table('ok_hbase_test', d: {})
+
+# put a bunch of data in the table
+('hbaaa'..'hbzzz').each_with_index do |row_key, index|
+  table.put(
+    row_key,
+    {
+      'd:row_number' => "#{index+1}",
+      'd:message' => "this is row number #{index+1}"
+    }
+  )
+print "wrote row: #{row_key}\r"
+end
+
+# scan for all rows beginning with 'hba'
+table.scan(row_prefix: 'hba')
+
+# get the row with the row key 'hbase'
+table.row('hbase')
+
+# clean up
+conn.delete_table('ok_hbase_test', true)
 ```
 
 ## Contributing
