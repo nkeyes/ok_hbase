@@ -20,7 +20,7 @@
 <div id="container">
   <div class="inner">
 
-    <header>
+    <header style="text-align: center">
       <img id="logo" src="images/logo/520x104_stroke.png"/>
 
       <h2>Lightweight Ruby Adapter for HBase</h2>
@@ -101,46 +101,46 @@
       </h3>
       <pre>
         <code class="ruby">
-          # simple example showing how to:
-          # 1) connect
-          # 2) create a table
-          # 3) write rows
-          # 4) scan for rows
-          # 5) get a row by key
-          # 6) delete a table
+# simple example showing how to:
+# 1) connect
+# 2) create a table
+# 3) write rows
+# 4) scan for rows
+# 5) get a row by key
+# 6) delete a table
 
-          require 'ok_hbase'
+require 'ok_hbase'
 
-          # get a connection
-          conn = OkHbase::Connection.new(
-            host: 'localhost',
-            port: 9090,
-            auto_connect: true
-          )
+# get a connection
+conn = OkHbase::Connection.new(
+  host: 'localhost',
+  port: 9090,
+  auto_connect: true
+)
 
-          # create a new table with column family 'd'
-          table = conn.create_table('ok_hbase_test', d: {})
+# create a new table with column family 'd'
+table = conn.create_table('ok_hbase_test', d: {})
 
-          # put a bunch of data in the table
-          ('hbaaa'..'hbzzz').each_with_index do |row_key, index|
-            table.put(
-              row_key,
-              {
-                'd:row_number' => "#{index+1}",
-                'd:message' => "this is row number #{index+1}"
-              }
-            )
-          print "wrote row: #{row_key}\r"
-          end
+# put a bunch of data in the table
+('hbaaa'..'hbzzz').each_with_index do |row_key, index|
+  table.put(
+    row_key,
+    {
+      'd:row_number' => "#{index+1}",
+      'd:message' => "this is row number #{index+1}"
+    }
+  )
+print "wrote row: #{row_key}\r"
+end
 
-          # scan for all rows beginning with 'hba'
-          table.scan(row_prefix: 'hba')
+# scan for all rows beginning with 'hba'
+table.scan(row_prefix: 'hba')
 
-          # get the row with the row key 'hbase'
-          table.row('hbase')
+# get the row with the row key 'hbase'
+table.row('hbase')
 
-          # clean up
-          conn.delete_table('ok_hbase_test', true)
+# clean up
+conn.delete_table('ok_hbase_test', true)
         </code>
       </pre>
 
