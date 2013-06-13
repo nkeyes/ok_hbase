@@ -1,93 +1,120 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>ok_hbase by okcwest</title>
-  </head>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen"/>
+  <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print"/>
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>ok_hbase by okcwest</title>
+</head>
 
-  <body>
-    <div id="container">
-      <div class="inner">
+<body>
+<div id="container">
+  <div class="inner">
 
-        <header>
-          <img id="logo" src="images/logo/520x104_stroke.png"/>
-          <h2>Lightweight Ruby Adapter for HBase</h2>
-        </header>
+    <header>
+      <img id="logo" src="images/logo/520x104_stroke.png"/>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/okcwest/ok_hbase/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/okcwest/ok_hbase/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/okcwest/ok_hbase" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
+      <h2>Lightweight Ruby Adapter for HBase</h2>
+    </header>
 
-        <hr>
+    <section id="downloads" class="clearfix">
+      <a href="https://github.com/okcwest/ok_hbase/zipball/master" id="download-zip"
+         class="button"><span>Download .zip</span></a>
+      <a href="https://github.com/okcwest/ok_hbase/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+      <a href="https://github.com/okcwest/ok_hbase" id="view-on-github" class="button"><span>View on GitHub</span></a>
+    </section>
 
-        <section id="main_content">
-          <h2>
-<a name="what" class="anchor" href="#what"><span class="octicon octicon-link"></span></a>What?</h2>
+    <hr>
 
-<h3>
-<a name="totally-cribbed-from-happybase" class="anchor" href="#totally-cribbed-from-happybase"><span class="octicon octicon-link"></span></a>Totally cribbed from <a href="https://github.com/wbolster/happybase">HappyBase &raquo;</a>
-</h3>
+    <section id="main_content">
+      <h2>
+        <a name="what" class="anchor" href="#what"><span class="octicon octicon-link"></span></a>What?</h2>
 
-<p>ok_hbase is a lightweight Hbase Adapter for Ruby applications that don't have the option of running in JRuby.
-You can use ok_hbase in anything CLI Ruby scripts to a Sinatra or Rails application: OkHbase::ActiveModel is a good starting point for those more comfortable with ActiveRecord.</p>
+      <h3>
+        <a name="totally-cribbed-from-happybase" class="anchor" href="#totally-cribbed-from-happybase"><span
+            class="octicon octicon-link"></span></a>Totally cribbed from <a
+          href="https://github.com/wbolster/happybase">HappyBase &raquo;</a>
+      </h3>
 
-<h2>
-<a name="why" class="anchor" href="#why"><span class="octicon octicon-link"></span></a>Why?</h2>
+      <p>ok_hbase is a lightweight Hbase Adapter for Ruby applications that don't have the option of running in JRuby.
+        You can use ok_hbase in anything CLI Ruby scripts to a Sinatra or Rails application: OkHbase::ActiveModel is a
+        good starting point for those more comfortable with ActiveRecord.</p>
 
-<p>There is a lack of good gems to interface with HBase from Ruby (not JRuby).<br>
-Gems like <a href="https://github.com/sishen/hbase-ruby">hbase-ruby</a> and
-<a href="https://github.com/bmuller/hbaserb">hbaserb</a> are too basic; <a href="https://github.com/greglu/hbase-stargate">hbase-stargate</a> uses REST, not Thrift; <a href="https://github.com/sqs/rhino">Rhino</a> hasn't been updaed in 3 years; and finally, <a href="https://github.com/CompanyBook/massive_record">Massive Record</a> does not meet our performance expectations.  </p>
+      <h2>
+        <a name="why" class="anchor" href="#why"><span class="octicon octicon-link"></span></a>Why?</h2>
 
-<p>After limping along with Massive Record for too long, I decided it would be better and quicker to start from scratch than to try to <a href="https://github.com/okcwest/massive_record">fix</a> Massive Record.</p>
+      <p>There is a lack of good gems to interface with HBase from Ruby (not JRuby).<br>
+        Gems like <a href="https://github.com/sishen/hbase-ruby">hbase-ruby</a> and
+        <a href="https://github.com/bmuller/hbaserb">hbaserb</a> are too basic; <a
+            href="https://github.com/greglu/hbase-stargate">hbase-stargate</a> uses REST, not Thrift; <a
+            href="https://github.com/sqs/rhino">Rhino</a> hasn't been updaed in 3 years; and finally, <a
+            href="https://github.com/CompanyBook/massive_record">Massive Record</a> does not meet our performance
+        expectations. </p>
 
-<p>Besides, it's an interesting exercise!</p>
+      <p>After limping along with Massive Record for too long, I decided it would be better and quicker to start from
+        scratch than to try to <a href="https://github.com/okcwest/massive_record">fix</a> Massive Record.</p>
 
-<h2>
-<a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h2>
+      <p>Besides, it's an interesting exercise!</p>
 
-<h3>
-<a name="speed" class="anchor" href="#speed"><span class="octicon octicon-link"></span></a>Speed</h3>
+      <h2>
+        <a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h2>
 
-<p>One of the biggest issues we've seen with usage Massive Record is speed, or lack there of. We use HBase to back the messaging system on <a href="http://www.kiss.com">Kiss.com</a>, and for users with large inboxes, retrieval is painfully slow (~1000+ messages take 20sec or more). Writes were slow too, ~500ms is the norm. Some of this slowness is probably due to improper HBase configuration, but we saw signifigant <a href="https://github.com/okcwest/subspace/wiki/HBase-Benchmarking-Notes">differences</a> reading the same data from different libraries. So we know it's possible to have faster HBase code in Ruby.</p>
+      <h3>
+        <a name="speed" class="anchor" href="#speed"><span class="octicon octicon-link"></span></a>Speed</h3>
 
-<h3>
-<a name="simplicity" class="anchor" href="#simplicity"><span class="octicon octicon-link"></span></a>Simplicity</h3>
+      <p>One of the biggest issues we've seen with usage Massive Record is speed, or lack there of. We use HBase to back
+        the messaging system on <a href="http://www.kiss.com">Kiss.com</a>, and for users with large inboxes, retrieval
+        is painfully slow (~1000+ messages take 20sec or more). Writes were slow too, ~500ms is the norm. Some of this
+        slowness is probably due to improper HBase configuration, but we saw signifigant <a
+            href="https://github.com/okcwest/subspace/wiki/HBase-Benchmarking-Notes">differences</a> reading the same
+        data from different libraries. So we know it's possible to have faster HBase code in Ruby.</p>
 
-<p>We have come to the conclusion (somewhat obvious in hindsight) that a traditional ORM pattern is a poor fit for HBase, and the overhead not only slows things down, but unnecessarily complicates things. With ok-hbase I am trying to find a balance: keep it simple, but still provide some nice features above and beyond being just a thin wrapper around the Thrift libraries.</p>
+      <h3>
+        <a name="simplicity" class="anchor" href="#simplicity"><span class="octicon octicon-link"></span></a>Simplicity
+      </h3>
 
-<h3>
-<a name="flexibility" class="anchor" href="#flexibility"><span class="octicon octicon-link"></span></a>Flexibility</h3>
+      <p>We have come to the conclusion (somewhat obvious in hindsight) that a traditional ORM pattern is a poor fit for
+        HBase, and the overhead not only slows things down, but unnecessarily complicates things. With ok-hbase I am
+        trying to find a balance: keep it simple, but still provide some nice features above and beyond being just a
+        thin wrapper around the Thrift libraries.</p>
 
-<p>Building just another thin wrapper around the Thrift libraries wouldn't be very useful, so with ok-hbase, I hope to provide a bit more. While a traditional ORM is not a good fit for HBase, there are some ORM-like features that would be nice to have. These features will be implemented as mixins or concerns: You can use the basic table class, or subclass it and add the mixins you want.</p>
-        </section>
+      <h3>
+        <a name="flexibility" class="anchor" href="#flexibility"><span class="octicon octicon-link"></span></a>Flexibility
+      </h3>
 
-        <footer>
-          ok_hbase is maintained by <a href="https://github.com/okcwest">okcwest</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
+      <p>Building just another thin wrapper around the Thrift libraries wouldn't be very useful, so with ok-hbase, I
+        hope to provide a bit more. While a traditional ORM is not a good fit for HBase, there are some ORM-like
+        features that would be nice to have. These features will be implemented as mixins or concerns: You can use the
+        basic table class, or subclass it and add the mixins you want.</p>
 
-                  <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-41698711-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
 
-      </div>
-    </div>
-  </body>
+    </section>
+
+    <footer>
+      ok_hbase is maintained by <a href="https://github.com/okcwest">okcwest</a><br>
+      This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a
+        href="http://twitter.com/jasonlong">Jason Long</a>.
+    </footer>
+
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      try {
+        var pageTracker = _gat._getTracker("UA-41698711-1");
+        pageTracker._trackPageview();
+      } catch (err) {
+      }
+    </script>
+
+  </div>
+</div>
+</body>
 </html>
