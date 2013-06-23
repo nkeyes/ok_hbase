@@ -19,7 +19,7 @@ module OkHbase
       @_lock = Mutex.new
       @_connection_queue = Queue.new
 
-      connection_opts = opts
+      connection_opts = opts.dup
 
       connection_opts[:auto_connect] = false
 
@@ -31,7 +31,7 @@ module OkHbase
       # The first connection is made immediately so that trivial
       # mistakes like unresolvable host names are raised immediately.
       # Subsequent connections are connected lazily.
-      self.connection {}
+      self.connection {} if opts[:auto_connect]
     end
 
     def connection(timeout = nil)
