@@ -26,10 +26,12 @@ module OkHbase
       size.times do
         connection = OkHbase::Connection.new(connection_opts)
         @_connection_queue << connection
-
-        self.connection {}
-
       end
+
+      # The first connection is made immediately so that trivial
+      # mistakes like unresolvable host names are raised immediately.
+      # Subsequent connections are connected lazily.
+      self.connection {}
     end
 
     def connection(timeout = nil)
@@ -48,7 +50,7 @@ module OkHbase
       begin
         connection.open()
         yield connection
-      rescue Apache::Hadoop::Hbase::Thrift::IOError, Thrift::TransportException, SocketError=> e
+      rescue Apache::Hadoop::Hbase::Thrift::IOError, Thrift::TransportException, SocketError => e
         OkHbase.logger.info("Replacing tainted pool connection")
 
         connection.send(:_refresh_thrift_client)
