@@ -37,7 +37,7 @@ module OkHbase
 
       return_after_use = false
 
-      if connection
+      unless connection
         return_after_use = true
         connection = _acquire_connection(timeout)
         @_lock.synchronize do
