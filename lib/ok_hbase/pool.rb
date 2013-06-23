@@ -16,7 +16,6 @@ module OkHbase
 
       OkHbase.logger.debug("Initializing connection pool with #{size} connections.")
 
-      @_lock = Mutex.new
       @_connection_queue = Queue.new
 
       connection_opts = opts.dup
@@ -42,9 +41,7 @@ module OkHbase
       unless connection
         return_after_use = true
         connection = _acquire_connection(timeout)
-        @_lock.synchronize do
-          Thread.current[:ok_hbase_current_connection] = connection
-        end
+        Thread.current[:ok_hbase_current_connection] = connection
       end
 
       begin
