@@ -35,7 +35,7 @@ module OkHbase
     end
 
     def connection(timeout = nil)
-      connection = Thread.current[:current_connection]
+      connection = Thread.current[:ok_hbase_current_connection]
 
       return_after_use = false
 
@@ -43,7 +43,7 @@ module OkHbase
         return_after_use = true
         connection = _acquire_connection(timeout)
         @_lock.synchronize do
-          Thread.current[:current_connection] = connection
+          Thread.current[:ok_hbase_current_connection] = connection
         end
       end
 
@@ -58,7 +58,7 @@ module OkHbase
         raise e
       ensure
         if return_after_use
-          Thread.current.delete[:current_connection]
+          Thread.current.delete[:ok_hbase_current_connection]
           _return_connection(connection)
         end
       end
