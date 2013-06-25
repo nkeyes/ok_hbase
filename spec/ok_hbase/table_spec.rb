@@ -126,11 +126,11 @@ module OkHbase
           subject.put(row_key2, row_data2.merge('d:foo' => 'OldFoo2'), timestamp-5)
           subject.put(row_key2, row_data2, timestamp)
 
-          subject.rows([row_key1, row_key2]).should == [row_data1, row_data2]
-          subject.rows([row_key1, row_key2], nil, timestamp-9).should == [row_data1, row_data2.merge('d:foo' => 'OldFoo1')]
+          subject.rows([row_key1, row_key2]).should == [[row_key1, row_data1], [row_key2, row_data2]]
+          subject.rows([row_key1, row_key2], nil, timestamp-9).should == [[row_key1, row_data1], [row_key2, row_data2.merge('d:foo' => 'OldFoo1')]]
 
-          subject.rows([row_key1, row_key2], row_data1.keys - ['d:foo']).should == [row_data1.except('d:foo'), row_data2.except('d:foo')]
-          subject.rows([row_key1, row_key2], row_data1.keys - ['d:foo'], timestamp-5).should == [row_data1.except('d:foo'), row_data2.except('d:foo')]
+          subject.rows([row_key1, row_key2], row_data1.keys - ['d:foo']).should == [[row_key1, row_data1.except('d:foo')], [row_key2, row_data2.except('d:foo')]]
+          subject.rows([row_key1, row_key2], row_data1.keys - ['d:foo'], timestamp-5).should == [[row_key1, row_data1.except('d:foo')], [row_key2, row_data2.except('d:foo')]]
 
         end
       end

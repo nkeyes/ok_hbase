@@ -86,7 +86,7 @@ module OkHbase
           self.connection.client.getRowsWithColumns(self.connection.table_name(table_name), row_keys, columns)
         end
 
-        rows.map { |row| _make_row(row.columns, include_timestamp) }
+        rows.map { |row| [row.row, _make_row(row.columns, include_timestamp) ]}
       end
 
       def cells(row_key, column, versions = nil, timestamp = nil, include_timestamp = nil)
