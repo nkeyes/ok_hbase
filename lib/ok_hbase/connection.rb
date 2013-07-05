@@ -64,6 +64,14 @@ module OkHbase
       @transport && @transport.open?
     end
 
+    def ping?
+      begin
+        return open? && tables
+      rescue
+        return false
+      end
+    end
+
     def close
       return unless open?
       @transport.close
