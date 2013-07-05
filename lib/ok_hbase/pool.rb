@@ -55,7 +55,7 @@ module OkHbase
         raise e
       ensure
         if return_after_use
-          Thread.current.delete[:ok_hbase_current_connection]
+          Thread.current[:ok_hbase_current_connection] = nil
           _return_connection(connection)
         end
       end
