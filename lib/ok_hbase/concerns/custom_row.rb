@@ -8,7 +8,7 @@ module OkHbase
       end
 
       def rows(row_keys, columns = nil, timestamp = nil, include_timestamp = false)
-        super.map.with_index! { |data, i| self.row_class.new table: self, row_key: row_keys[i], default_column_family: self.default_column_family, raw_data: data }
+        super.map { |row_key, data| self.row_class.new table: self, row_key: row_key, default_column_family: self.default_column_family, raw_data: data }
       end
 
       def scan(opts={})
