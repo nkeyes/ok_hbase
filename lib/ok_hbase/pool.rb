@@ -46,12 +46,11 @@ module OkHbase
 
       begin
         connection.open()
+        _reset_connection(connection) unless connection.ping?
+
         yield connection
       rescue Apache::Hadoop::Hbase::Thrift::IOError, Thrift::TransportException, SocketError => e
-        OkHbase.logger.info("Replacing tainted pool connection")
-
-        connection.send(:_refresh_thrift_client)
-        connection.open
+        _reset_connection(connection)
         raise e
       ensure
         if return_after_use
@@ -71,6 +70,13 @@ module OkHbase
       rescue TimeoutError
         raise OkHbase::NoConnectionsAvailable.new("No connection available from pool within specified timeout: #{timeout}")
       end
+    end
+
+    def _reset_connection(connection)
+      OkHbase.logger.info("Replacing tainted pool connection")
+
+      connection.send(:_refresh_thrift_client)
+      connection.open
     end
 
     def _return_connection(connection)
