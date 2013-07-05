@@ -33,6 +33,7 @@ end
 require 'ok_hbase/version'
 require 'ok_hbase/client'
 require 'ok_hbase/connection'
+require 'ok_hbase/pool'
 require 'ok_hbase/concerns'
 require 'ok_hbase/table'
 require 'ok_hbase/row'
