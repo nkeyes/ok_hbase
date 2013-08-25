@@ -61,9 +61,9 @@ module OkHbase
         rows = if timestamp
           raise TypeError.new "'timestamp' must be an integer" unless timestamp.is_a? Integer
 
-          self.connection.client.getRowWithColumnsTs(self.connection.table_name(table_name), row_key, columns, timestamp)
+          self.connection.client.getRowWithColumnsTs(self.connection.table_name(table_name), row_key, columns, timestamp, {})
         else
-          self.connection.client.getRowWithColumns(self.connection.table_name(table_name), row_key, columns)
+          self.connection.client.getRowWithColumns(self.connection.table_name(table_name), row_key, columns, {})
         end
 
         rows.empty? ? {} : _make_row(rows[0].columns, include_timestamp)
@@ -81,9 +81,9 @@ module OkHbase
 
           columns = _column_family_names() unless columns
 
-          self.connection.client.getRowsWithColumnsTs(self.connection.table_name(table_name), row_keys, columns, timestamp)
+          self.connection.client.getRowsWithColumnsTs(self.connection.table_name(table_name), row_keys, columns, timestamp, {})
         else
-          self.connection.client.getRowsWithColumns(self.connection.table_name(table_name), row_keys, columns)
+          self.connection.client.getRowsWithColumns(self.connection.table_name(table_name), row_keys, columns, {})
         end
 
         rows.map { |row| [row.row, _make_row(row.columns, include_timestamp) ]}
@@ -101,9 +101,9 @@ module OkHbase
         cells = if timestamp
           raise TypeError.new "'timestamp' must be an integer" unless timestamp.is_a? Integer
 
-          self.connection.client.getVerTs(self.connection.table_name(table_name), row_key, column, timestamp, versions)
+          self.connection.client.getVerTs(self.connection.table_name(table_name), row_key, column, timestamp, versions, {})
         else
-          self.connection.client.getVer(self.connection.table_name(table_name), row_key, column, versions)
+          self.connection.client.getVer(self.connection.table_name(table_name), row_key, column, versions, {})
         end
 
         cells.map { |cell| include_timestamp ? [cell.value, cell.timestamp] : cell.value }
@@ -129,7 +129,7 @@ module OkHbase
 
         scanner = _scanner(opts)
 
-        scanner_id = self.connection.client.scannerOpenWithScan(self.connection.table_name(table_name), scanner)
+        scanner_id = self.connection.client.scannerOpenWithScan(self.connection.table_name(table_name), scanner, {})
 
         fetched_count = returned_count = 0
 
@@ -178,7 +178,7 @@ module OkHbase
           end
 
         else
-          timestamp ? self.connection.client.deleteAllRowTs(self.connection.table_name(table_name), row_key, timestamp) : self.connection.client.deleteAllRow(self.connection.table_name(table_name), row_key)
+          timestamp ? self.connection.client.deleteAllRowTs(self.connection.table_name(table_name), row_key, timestamp, {}) : self.connection.client.deleteAllRow(self.connection.table_name(table_name), row_key, {})
         end
       end
 
