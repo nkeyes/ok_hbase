@@ -9,6 +9,7 @@ module OkHbase
   class Pool
     @_lock
     @_connection_queue
+    @_connection_ids
 
     def initialize(size, opts={})
       raise TypeError.new("'size' must be an integer") unless size.is_a? Integer
@@ -16,7 +17,9 @@ module OkHbase
 
       OkHbase.logger.debug("Initializing connection pool with #{size} connections.")
 
+      @_lock = Mutex.new
       @_connection_queue = Queue.new
+      @_connection_ids = []
 
       connection_opts = opts.dup
 
@@ -25,61 +28,64 @@ module OkHbase
       size.times do
         connection = OkHbase::Connection.new(connection_opts)
         @_connection_queue << connection
+        @_connection_ids << connection.object_id
       end
 
       # The first connection is made immediately so that trivial
       # mistakes like unresolvable host names are raised immediately.
       # Subsequent connections are connected lazily.
-      self.connection {} if opts[:auto_connect]
+      self.with_connection {} if opts[:auto_connect]
     end
 
-    def connection(timeout = nil)
+    def synchronize(&block)
+      @_lock.synchronize(&block)
+    end
+
+    def with_connection(timeout = nil)
       connection = Thread.current[:ok_hbase_current_connection]
 
       return_after_use = false
 
-      unless connection
-        return_after_use = true
-        connection = _acquire_connection(timeout)
-        Thread.current[:ok_hbase_current_connection] = connection
-      end
-
       begin
-        connection.open()
-        _reset_connection(connection) unless connection.ping?
-
+        unless connection
+          return_after_use = true
+          connection = get_connection(timeout)
+          Thread.current[:ok_hbase_current_connection] = connection
+        end
         yield connection
       rescue Apache::Hadoop::Hbase::Thrift::IOError, Thrift::TransportException, SocketError => e
-        _reset_connection(connection)
         raise e
       ensure
         if return_after_use
           Thread.current[:ok_hbase_current_connection] = nil
-          _return_connection(connection)
+          return_connection(connection)
         end
       end
     end
 
-    private
-
-    def _acquire_connection(timeout = nil)
+    def get_connection(timeout = nil)
       begin
-        Timeout.timeout(timeout) do
-          return @_connection_queue.deq
+        connection = Timeout.timeout(timeout) do
+          @_connection_queue.deq
         end
       rescue TimeoutError
         raise OkHbase::NoConnectionsAvailable.new("No connection available from pool within specified timeout: #{timeout}")
       end
+      begin
+        connection.open()
+        connection.reset unless connection.ping?
+      rescue Apache::Hadoop::Hbase::Thrift::IOError, Thrift::TransportException, SocketError => e
+        connection.reset
+        raise e
+      end
+      connection
     end
 
-    def _reset_connection(connection)
-      OkHbase.logger.info("Replacing tainted pool connection")
+    def return_connection(connection)
+      synchronize do
+        return unless @_connection_ids.include? connection.object_id
+      end
 
-      connection.send(:_refresh_thrift_client)
-      connection.open
-    end
-
-    def _return_connection(connection)
       @_connection_queue << connection
     end
   end
