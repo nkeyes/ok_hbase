@@ -82,9 +82,9 @@ module OkHbase
           return if batch_mutations.blank?
 
           if @timestamp
-            @table.connection.client.mutateRowsTs(@table.connection.table_name(@table.table_name), batch_mutations, @timestamp)
+            @table.connection.client.mutateRowsTs(@table.connection.table_name(@table.table_name), batch_mutations, @timestamp, {})
           else
-            @table.connection.client.mutateRows(@table.connection.table_name(@table.table_name), batch_mutations)
+            @table.connection.client.mutateRows(@table.connection.table_name(@table.table_name), batch_mutations, {})
           end
 
           _reset_mutations()

@@ -4,6 +4,9 @@
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
 
+require 'thrift'
+require_relative 'hbase.thrift_types.rb'
+
 module Apache
   module Hadoop
     module Hbase
