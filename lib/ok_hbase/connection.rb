@@ -153,6 +153,12 @@ module OkHbase
       table_prefix && !name.start_with?(table_prefix) ? [table_prefix, name].join(table_prefix_separator) : name
     end
 
+    def reset
+      OkHbase.logger.info("resetting connection")
+      _refresh_thrift_client
+      open
+    end
+
     private
 
     def _refresh_thrift_client
