@@ -2,9 +2,7 @@ require 'thrift'
 require 'thrift/transport/socket'
 require 'thrift/protocol/binary_protocol'
 
-require 'thrift/hbase/hbase_constants'
-require 'thrift/hbase/hbase_types'
-require 'thrift/hbase/hbase'
+require 'thrift/hbase'
 
 module OkHbase
   class Client < Apache::Hadoop::Hbase::Thrift::Hbase::Client
