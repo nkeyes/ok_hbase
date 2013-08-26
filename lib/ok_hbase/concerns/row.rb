@@ -84,7 +84,6 @@ module OkHbase
       end
 
       def _new_increment(args)
-        args[:table] = self.table.table_name
         args[:row] = self.row_key
         args
       end
