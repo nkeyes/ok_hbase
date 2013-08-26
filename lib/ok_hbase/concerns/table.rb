@@ -86,7 +86,7 @@ module OkHbase
           self.connection.client.getRowsWithColumns(self.connection.table_name(table_name), row_keys, columns, {})
         end
 
-        rows.map { |row| [row.row, _make_row(row.columns, include_timestamp) ]}
+        rows.map { |row| [row.row, _make_row(row.columns, include_timestamp)] }
       end
 
       def cells(row_key, column, versions = nil, timestamp = nil, include_timestamp = nil)
@@ -204,6 +204,15 @@ module OkHbase
         counter_inc(row_key, column, -value)
       end
 
+      def increment(increment)
+        self.connection.increment(_new_increment(increment))
+      end
+
+      def increment_rows(increments)
+        increments.map! { |i| _new_increment(i) }
+        self.connection.increment(_new_increment(increments))
+      end
+
       alias_method :find, :scan
 
       def _column_family_names()
@@ -235,6 +244,11 @@ module OkHbase
           row[cell_name] = include_timestamp ? [cell.value, cell.timestamp] : cell.value
         end
         row
+      end
+
+      def _new_increment(args)
+        args[:table] = self.table_name
+        args
       end
     end
   end

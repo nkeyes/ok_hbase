@@ -143,6 +143,15 @@ module OkHbase
       table_prefix && !name.start_with?(table_prefix) ? [table_prefix, name].join(table_prefix_separator) : name
     end
 
+    def increment(increment)
+      client.increment(_new_increment(increment))
+    end
+
+    def increment_rows(increments)
+      increments.map! { |i| _new_increment(i) }
+      client.incrementRows(increments)
+    end
+
     private
 
     def _refresh_thrift_client
@@ -150,6 +159,14 @@ module OkHbase
       @transport = @transport_class.new(socket)
       protocol = Thrift::BinaryProtocolAccelerated.new(@transport)
       @client = OkHbase::Client.new(protocol, nil, max_tries)
+    end
+
+    def _new_increment(args)
+      if args[:amount]
+        args[:ammount] ||= args[:amount]
+        args.delete(:amount)
+      end
+      Apache::Hadoop::Hbase::Thrift::TIncrement.new(args)
     end
   end
 end
