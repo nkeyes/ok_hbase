@@ -39,6 +39,9 @@ module OkHbase
         table.delete(row_key)
       end
 
+      def increment(increment)
+        self.table.increment(_new_increment(increment))
+      end
 
       def method_missing(method, *arguments, &block)
         if method.to_s[-1, 1] == '='
@@ -78,6 +81,11 @@ module OkHbase
         end
 
         encoded
+      end
+
+      def _new_increment(args)
+        args[:row] = self.row_key
+        args
       end
 
     end
