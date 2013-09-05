@@ -41,7 +41,7 @@ conn = OkHbase::Connection.new(
 # create a new table with column family 'd'
 table = conn.create_table('ok_hbase_test', d: {})
 
-# put a bunch of data in the table
+puts 'putting a bunch of data in the table.'
 ('hbaaa'..'hbzzz').each_with_index do |row_key, index|
   table.put(
     row_key,
@@ -53,13 +53,32 @@ table = conn.create_table('ok_hbase_test', d: {})
 print "wrote row: #{row_key}\r"
 end
 
-# scan for all rows beginning with 'hba'
-table.scan(row_prefix: 'hba')
+puts "\nscanning for all rows, starting with 'hbzza'"
+table.scan(start_row: 'hbzza') do |row_key, columns|
+  puts row_key, columns, "\n"
+end
 
-# get the row with the row key 'hbase'
-table.row('hbase')
+puts "\nscanning for all rows, stopping with 'hbaaz'"
+# stop_row is NOT inclusive, so use the next greatest value
+table.scan(stop_row: 'hbab') do |row_key, columns|
+  puts row_key, columns, "\n"
+end
 
-# clean up
+puts "\nscanning for the row with keys 'hbase' and 'hbasf'"
+# stop_row is NOT inclusive, so use the next greatest value
+table.scan(start_row: 'hbase', stop_row: 'hbasg') do |row_key, columns|
+  puts row_key, columns, "\n"
+end
+
+puts "\nscanning for all rows with keys beginning with 'hba'"
+table.scan(row_prefix: 'hba')do |row_key, columns|
+  puts row_key, columns, "\n"
+end
+
+puts "\ngetting the row with the row key 'hbase'"
+puts table.row('hbase')
+
+puts "\ncleaning up"
 conn.delete_table('ok_hbase_test', true)
 ```
 
